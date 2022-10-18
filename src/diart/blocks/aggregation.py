@@ -106,6 +106,8 @@ class DelayedAggregation:
         Stream end time (in seconds). Defaults to None.
         If the stream end time is known, then append remaining outputs at the end,
         otherwise the last `latency - step` seconds are ignored.
+    cropping_mode: ("strict", "loose", "center"), optional
+        Defines the cropping mode. Defaults to "loose".
 
     Example
     --------
@@ -135,11 +137,13 @@ class DelayedAggregation:
         latency: Optional[float] = None,
         strategy: Literal["mean", "hamming", "first"] = "hamming",
         stream_end: Optional[float] = None
+        cropping_mode: Literal["strict", "loose", "center"] = "loose"
     ):
         self.step = step
         self.latency = latency
         self.strategy = strategy
         self.stream_end = stream_end
+        self.cropping_mode = cropping_mode
 
         if self.latency is None:
             self.latency = self.step
@@ -161,7 +165,7 @@ class DelayedAggregation:
             num_frames = output_window.data.shape[0]
             first_region = Segment(0, output_region.end)
             first_output = buffers[0].crop(
-                first_region, fixed=first_region.duration
+                first_region, mode=self.cropping_mode, fixed=first_region.duration
             )
             first_output[-num_frames:] = output_window.data
             resolution = output_region.end / first_output.shape[0]

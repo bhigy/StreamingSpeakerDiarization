@@ -108,6 +108,9 @@ class DelayedAggregation:
         otherwise the last `latency - step` seconds are ignored.
     cropping_mode: ("strict", "loose", "center"), optional
         Defines the cropping mode. Defaults to "loose".
+        This will define the value of the mode parameter used in SlidingWindowFeature.crop
+        (from pyannote.core, see https://pyannote.github.io/pyannote-core/reference.html#pyannote.core.SlidingWindowFeature.crop
+        for more details).
 
     Example
     --------

@@ -153,7 +153,7 @@ class DelayedAggregation:
         step: float,
         latency: Optional[float] = None,
         strategy: Literal["mean", "hamming", "first"] = "hamming",
-        stream_end: Optional[float] = None
+        stream_end: Optional[float] = None,
         cropping_mode: Literal["strict", "loose", "center"] = "loose"
     ):
         self.step = step

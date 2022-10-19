@@ -11,10 +11,9 @@ class AggregationStrategy:
     Parameters
     ----------
     cropping_mode: ("strict", "loose", "center"), optional
-        Defines the cropping mode. Defaults to "loose".
-        This will define the value of the mode parameter used in SlidingWindowFeature.crop
-        (from pyannote.core, see https://pyannote.github.io/pyannote-core/reference.html#pyannote.core.SlidingWindowFeature.crop
-        for more details).
+        Defines the mode to crop buffer chunks as in pyannote.core.
+        See https://pyannote.github.io/pyannote-core/reference.html#pyannote.core.SlidingWindowFeature.crop
+        Defaults to "loose".
     """
 
     def __init__(self, cropping_mode: Literal["strict", "loose", "center"] = "loose"):
@@ -113,20 +112,19 @@ class DelayedAggregation:
     latency: float, optional
         Desired latency, in seconds. Defaults to step.
         The higher the latency, the more overlapping windows to aggregate.
-    strategy: ("mean", "hamming", "any"), optional
+    strategy: ("mean", "hamming", "first"), optional
         Specifies how to aggregate overlapping windows. Defaults to "hamming".
         "mean": simple average
         "hamming": average weighted by the Hamming window values (aligned to the buffer)
-        "any": no aggregation, pick the first overlapping window
+        "first": no aggregation, pick the first overlapping window
     stream_end: float, optional
         Stream end time (in seconds). Defaults to None.
         If the stream end time is known, then append remaining outputs at the end,
         otherwise the last `latency - step` seconds are ignored.
     cropping_mode: ("strict", "loose", "center"), optional
-        Defines the cropping mode. Defaults to "loose".
-        This will define the value of the mode parameter used in SlidingWindowFeature.crop
-        (from pyannote.core, see https://pyannote.github.io/pyannote-core/reference.html#pyannote.core.SlidingWindowFeature.crop
-        for more details).
+        Defines the mode to crop buffer chunks as in pyannote.core.
+        See https://pyannote.github.io/pyannote-core/reference.html#pyannote.core.SlidingWindowFeature.crop
+        Defaults to "loose".
 
     Example
     --------
@@ -171,7 +169,7 @@ class DelayedAggregation:
         assert self.step <= self.latency, "Invalid latency requested"
 
         self.num_overlapping_windows = int(round(self.latency / self.step))
-        self.aggregate = AggregationStrategy.build(self.strategy)
+        self.aggregate = AggregationStrategy.build(self.strategy, self.cropping_mode)
 
     def _prepend_or_append(
         self,

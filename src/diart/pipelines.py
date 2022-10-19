@@ -112,10 +112,10 @@ class OnlineSpeakerTracking:
         )
         end_time = self.get_end_time(source.duration)
         pred_aggregation = blocks.DelayedAggregation(
-            self.config.step, self.config.latency, strategy="hamming", stream_end=end_time
+            self.config.step, self.config.latency, strategy="hamming", stream_end=end_time, cropping_mode='loose'
         )
         audio_aggregation = blocks.DelayedAggregation(
-            self.config.step, self.config.latency, strategy="first", stream_end=end_time
+            self.config.step, self.config.latency, strategy="first", stream_end=end_time, cropping_mode='center'
         )
         binarize = blocks.Binarize(source.uri, self.config.tau_active)
         return [

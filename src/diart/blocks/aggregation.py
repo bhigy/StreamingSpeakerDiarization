@@ -143,6 +143,7 @@ class DelayedAggregation:
         self.latency = latency
         self.strategy = strategy
         self.stream_end = stream_end
+        assert cropping_mode in ["strict", "loose", "center"], f"Invalid cropping mode `{cropping_mode}`"
         self.cropping_mode = cropping_mode
 
         if self.latency is None:

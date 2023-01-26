@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, List, Any, Union
+from typing import Optional, Text, List, Any, Union
 from typing_extensions import Literal
 
 import rx
@@ -28,12 +28,15 @@ class PipelineConfig:
         beta: float = 10,
         max_speakers: int = 20,
         device: Optional[torch.device] = None,
+        use_auth_token: Optional[Text] = None,
         **kwargs,
     ):
         # Default segmentation model is pyannote/segmentation
         self.segmentation = segmentation
         if self.segmentation is None:
-            self.segmentation = m.SegmentationModel.from_pyannote("pyannote/segmentation")
+            self.segmentation = m.SegmentationModel.from_pyannote(
+                "pyannote/segmentation", use_auth_token
+            )
 
         # Default duration is the one given by the segmentation model
         self.duration = duration
@@ -46,7 +49,9 @@ class PipelineConfig:
         # Default embedding model is pyannote/embedding
         self.embedding = embedding
         if self.embedding is None:
-            self.embedding = m.EmbeddingModel.from_pyannote("pyannote/embedding")
+            self.embedding = m.EmbeddingModel.from_pyannote(
+                "pyannote/embedding", use_auth_token
+            )
 
         # Latency defaults to the step duration
         self.step = step
